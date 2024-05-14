@@ -32,6 +32,7 @@ def main():
     clock = pygame.time.Clock()
     running = True
     score = 0
+    best_score = 0  # Initialize best score
     time_limit = 300  # Initial time
     time_remaining = time_limit
     object_rect = None
@@ -55,9 +56,13 @@ def main():
         score_text = font.render("Score: " + str(score), True, RED)
         screen.blit(score_text, (10, 10))
 
+        # Draw the best score
+        best_score_text = font.render("Best Score: " + str(best_score), True, RED)
+        screen.blit(best_score_text, (10, 50))
+
         # Draw the time remaining
         time_text = font.render("Time: " + str(max(round(time_remaining / 100, 1), 0)), True, RED)
-        screen.blit(time_text, (10, 50))
+        screen.blit(time_text, (10, 90))
 
         if time_remaining > 0 and object_rect is None:
             # Spawn the object if it's not already spawned
@@ -73,6 +78,10 @@ def main():
                 score += 1
                 time_remaining += time_added_on_hover  # Increase time on hover
                 object_rect = None  # Reset object
+
+        # Update best score if the current score surpasses it
+        if score > best_score:
+            best_score = score
 
         # Decrease time remaining
         time_remaining -= clock.get_rawtime()  # Use get_rawtime to ensure consistent timing
