@@ -1,17 +1,21 @@
 import time
 import cv2
 from cvzone.HandTrackingModule import HandDetector
+from cvzone.ClassificationModule import Classifier
 import numpy as np
 import math
 
 cap = cv2.VideoCapture(0)
 detector = HandDetector(maxHands=1)
+classifier = Classifier("Model/hand_gesture_model.keras", "Model/labels.txt")
 
 offset = 40
 image_size = 300
 
 folder = "Data/IV"
 counter = 0
+
+labels = ["I", "II", "III", "IV"]
 
 while True:
     success, image = cap.read()
@@ -36,6 +40,9 @@ while True:
             image_resize_shape = image_resize.shape
             width_gap = math.ceil((image_size-calculated_width) / 2)
             image_white[:, width_gap:calculated_width + width_gap] = image_resize
+            cv2.imshow("ImageWhite", image_white)
+            prediction, index = classifier.getPrediction(image)
+            print(prediction, index)
         else:
             try:
 
@@ -45,11 +52,11 @@ while True:
                 image_resize_shape = image_resize.shape
                 height_gap = math.ceil((image_size-calculated_height) / 2)
                 image_white[height_gap:calculated_height + height_gap, :] = image_resize
+                cv2.imshow("ImageWhite", image_white)
             except:
                 print("can't fit an image")
 
         cv2.imshow("ImageCrop", image_crop)
-        cv2.imshow("ImageWhite", image_white)
 
     cv2.imshow("Image", image)
     cv2.waitKey(1)

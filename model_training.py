@@ -54,4 +54,4 @@ print("Test Accuracy: {:.2f}%".format(accuracy * 100))
 
 
 # save the model
-model.save('hand_gesture_model.h5')
+model.save('Model/hand_gesture_model.keras')
