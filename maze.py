@@ -1,6 +1,6 @@
 import pygame
 import sys
-import random
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -8,7 +8,7 @@ pygame.init()
 # Set up the screen
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
-BLOCK_SIZE = 20
+BLOCK_SIZE = 40
 GRID_WIDTH = SCREEN_WIDTH // BLOCK_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // BLOCK_SIZE
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -18,8 +18,31 @@ pygame.display.set_caption("Maze Game")
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
+
+# Maze layout
+maze = [
+    "#######################",
+    "#                     #",
+    "# ##### ##### ##### ###",
+    "#     #     #     #   #",
+    "# ### # ### # ### ### #",
+    "#   #   # # #   # #   #",
+    "### ##### # ### # ### #",
+    "#       #   #   #     #",
+    "### ### ### # ### # ###",
+    "#   # #     # #     # #",
+    "# ### # ##### # ### # #",
+    "#     #       #     # #",
+    "### # ### ### # ### # #",
+    "#   # #   #   #   #   #",
+    "# ### ### # ### # #####",
+    "# #     # #     #     #",
+    "# # ### # ######### ###",
+    "# #   # #           # #",
+    "# ### # ######### # # #",
+    "#     #           #   #",
+    "#######################"
+]
 
 # Player class
 class Player:
@@ -36,60 +59,17 @@ class Player:
         r = pygame.Rect((self.x * BLOCK_SIZE, self.y * BLOCK_SIZE), (BLOCK_SIZE, BLOCK_SIZE))
         pygame.draw.rect(surface, GREEN, r)
 
-# Whistle class
-class Whistle:
-    def __init__(self):
-        self.x = random.randint(1, GRID_WIDTH - 2)
-        self.y = random.randint(1, GRID_HEIGHT - 2)
-        self.color = BLUE
-
-    def draw(self, surface):
-        r = pygame.Rect((self.x * BLOCK_SIZE, self.y * BLOCK_SIZE), (BLOCK_SIZE, BLOCK_SIZE))
-        pygame.draw.rect(surface, self.color, r)
-
-# Finish line class
-class FinishLine:
-    def __init__(self):
-        self.x = GRID_WIDTH - 2
-        self.y = GRID_HEIGHT - 2
-        self.color = RED
-
-    def draw(self, surface):
-        r = pygame.Rect((self.x * BLOCK_SIZE, self.y * BLOCK_SIZE), (BLOCK_SIZE, BLOCK_SIZE))
-        pygame.draw.rect(surface, self.color, r)
-
-def generate_random_map():
-    maze = [["#" for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-
-    def recursive_backtracking(x, y):
-        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        random.shuffle(directions)
-        for dx, dy in directions:
-            nx, ny = x + 2 * dx, y + 2 * dy
-            if 1 <= nx < GRID_WIDTH - 1 and 1 <= ny < GRID_HEIGHT - 1 and maze[ny][nx] == "#":
-                maze[y + dy][x + dx] = " "
-                maze[ny][nx] = " "
-                recursive_backtracking(nx, ny)
-
-    recursive_backtracking(1, 1)
-    return maze
-
-
 def main():
-    # Generate random map
-    global maze
-    maze = generate_random_map()
-
     # Initialize
     clock = pygame.time.Clock()
     player = Player()
-    whistle = Whistle()
-    finish_line = FinishLine()
 
     # Dictionary to keep track of keys being held down
     keys_down = {pygame.K_w: False, pygame.K_a: False, pygame.K_s: False, pygame.K_d: False}
 
     while True:
+        start_time = time.time()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -113,11 +93,6 @@ def main():
             dx = 1
         player.move(dx, dy)
 
-        # Check if player collects the whistle
-        if player.x == whistle.x and player.y == whistle.y:
-            whistle.x = random.randint(1, GRID_WIDTH - 2)
-            whistle.y = random.randint(1, GRID_HEIGHT - 2)
-
         # Draw the maze
         screen.fill(BLACK)
         for y in range(len(maze)):
@@ -126,17 +101,16 @@ def main():
                     r = pygame.Rect((x * BLOCK_SIZE, y * BLOCK_SIZE), (BLOCK_SIZE, BLOCK_SIZE))
                     pygame.draw.rect(screen, WHITE, r)
 
-        # Draw the finish line
-        finish_line.draw(screen)
-
-        # Draw the whistle
-        whistle.draw(screen)
-
         # Draw the player
         player.draw(screen)
 
         pygame.display.update()
-        clock.tick(10)
+        clock.tick(4)  # Adjust the argument to change the speed (10 frames per second in this case)
+
+        # Delay to slow down the movement
+        elapsed_time = time.time() - start_time
+        if elapsed_time < 0.1:
+            time.sleep(0.1 - elapsed_time)
 
 if __name__ == "__main__":
     main()
