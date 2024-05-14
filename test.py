@@ -90,6 +90,10 @@ while True:
 
             print(vol, int(length))
 
+
+            if int(length) < 90:
+                pyautogui.press("volumeup")
+
             cv2.rectangle(img, (50, 150), (85, 400), (0, 0, 255), 4)
             cv2.rectangle(img, (50, int(volbar)), (85, 400), (0, 0, 255), cv2.FILLED)
             cv2.putText(img, f"{int(volper)}%", (10, 40), cv2.FONT_ITALIC, 1, (0, 255, 98), 3)

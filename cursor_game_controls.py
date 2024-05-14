@@ -41,8 +41,6 @@ while True:
             volbar = np.interp(length, [30, 350], [400, 150])
             volper = np.interp(length, [30, 350], [0, 100])
 
-            print(vol, int(length))
-
             pyautogui.moveTo(x1, y1)
 
             if int(length) < 90:

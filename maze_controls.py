@@ -67,17 +67,9 @@ while True:
                     key_states['w'] = False
                     gesture = None
 
-            # if prev_hand_position and prev_hand_position != (center_x, center_y):
-            #     for key in pyautogui.KEYBOARD_KEYS:
-            #         pyautogui.keyUp(key)
-
-            angle = math.degrees(math.atan2(index_finger_tip.y - index_finger_base.y, index_finger_tip.x - index_finger_base.x))
             cv2.putText(image, f'Gesture: {gesture}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2,
                         cv2.LINE_AA)
 
-            # if angle <= -45 and angle > -135:
-            #     pyautogui.click()
-            # prev_hand_position = (center_x, center_y)
 
     cv2.imshow('Handtracker', image)
     cv2.waitKey(1)

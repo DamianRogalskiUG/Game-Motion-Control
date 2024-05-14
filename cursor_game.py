@@ -36,7 +36,7 @@ def main():
     time_limit = 300  # Initial time
     time_remaining = time_limit
     object_rect = None
-    time_added_on_hover = 100
+    time_added_on_hover = 200
 
     # Set up font
     font = pygame.font.Font(None, 36)
@@ -88,7 +88,7 @@ def main():
 
         # Increase difficulty over time
         if time_limit > 500:
-            time_limit -= 500  # Decrease time limit by 5 milliseconds per frame
+            time_limit -= 50  # Decrease time limit by 5 milliseconds per frame
 
         # Check if time runs out
         if time_remaining <= 0:
