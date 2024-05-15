@@ -117,7 +117,6 @@ while True:
                 print("can't fit an image")
 
 
-
         cv2.imshow("ImageCrop", image_crop)
         cv2.imshow("ImageWhite", image_white)
 

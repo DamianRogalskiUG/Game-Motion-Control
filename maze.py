@@ -6,7 +6,7 @@ import time
 pygame.init()
 
 # Set up the screen
-SCREEN_WIDTH = 1200
+SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 BLOCK_SIZE = 40
 GRID_WIDTH = SCREEN_WIDTH // BLOCK_SIZE
@@ -41,62 +41,66 @@ maps = [
         "# ### ### # ### # #####",
         "# #     # #     #     #",
         "# # ### # ######### ###",
-        "# #   # #           # #",
+        "# #   # #           #F#",
         "# ### # ######### # # #",
-        "#F    #           #   #",
+        "#     #           #   #",
         "#######################"
     ],
     [
         "#######################",
         "#                     #",
-        "#  .### #   #   #     #",
+        "# #.### # . #   #     #",
         "# #   # # ### # ### ###",
-        "# # # # #     # #     #",
+        "# # # # #  .  # #     #",
         "# # # # ##### # ##### #",
         "# # # #     # #     # #",
         "# # # ##### # ##### # #",
-        "# # #     # # #     # #",
+        "# # #     # # #   . # #",
         "# # ##### # # # ##### #",
-        "# #       # # #       #",
+        "# #  .    # # #       #",
         "# ######### # #########",
-        "#           #         #",
+        "#           #  .      #",
         "### ##### ### ##### ###",
-        "#     #         #     #",
+        "#   . #         #     #",
         "# ### ##### ### ##### #",
         "# #   #     #       # #",
         "# # # ##### ##### # # #",
-        "#   #             #   #",
+        "#   #   .         #  F#",
         "##### ########### #####",
         "#######################"
     ],
     [
-        "#######################",
-        "#                     #",
-        "# ##### ##### ##### ###",
-        "#     #     #     #   #",
-        "# ### # ### # ### ### #",
-        "#   #   # # #   # #   #",
-        "### ##### # ### # ### #",
-        "#       #   #   #     #",
-        "### ### ### # ### # ###",
-        "#   # #     # #     # #",
-        "# ### # ##### # ### # #",
-        "#     #       #     # #",
-        "### # ### ### # ### # #",
-        "#   # #   #   #   #   #",
-        "# ### ### # ### # #####",
-        "# #     # #     #     #",
-        "# # ### # ######### ###",
-        "# #   # #           # #",
-        "# ### # ######### # # #",
-        "#F    #           #   #",
-        "#######################"
+        "#########################",
+        "#                       #",
+        "#  .### #   #   #   . # #",
+        "# #   # # ### # ### ### #",
+        "# # # # . . . #     #   #",
+        "# # # ##### ##### ##### #",
+        "# # #     # #     #   # #",
+        "# # ##### # ##### ### # #",
+        "# #   . # # #     # # # #",
+        "# # ##### # # ##### # # #",
+        "# #       # #       # # #",
+        "# ######### # ######### #",
+        "#     .     #        .# #",
+        "### ##### ### ##### ### #",
+        "#     #      .  #     # #",
+        "# ### ##### ### ##### # #",
+        "# #   #     #       # # #",
+        "# # # ##### ##### #F# # #",
+        "#   #   .     .   #   # #",
+        "##### ########### ##### #",
+        "#         .##.          #",
+        "#########################",
     ]
 ]
 
 # Player class
 class Player:
     def __init__(self):
+        self.reset_position()
+
+    def reset_position(self):
         self.x = 1
         self.y = 1
         self.points = 0
@@ -105,11 +109,13 @@ class Player:
         if maps[current_map][self.y + dy][self.x + dx] != "#":
             self.x += dx
             self.y += dy
-            if maps[current_map][self.y][self.x] == "F":  # Check if player reaches finish line
+            # Check if player reaches finish line
+            if maps[current_map][self.y][self.x] == "F":
                 print("Congratulations! You reached the finish line!")
-                pygame.quit()
-                sys.exit()
-            elif maps[current_map][self.y][self.x] == ".":  # Check if player collects a point
+                # Code for displaying congratulations message...
+
+            # Check if player collects a point
+            elif maps[current_map][self.y][self.x] == ".":
                 self.points += 1
                 maps[current_map][self.y] = maps[current_map][self.y][:self.x] + " " + maps[current_map][self.y][self.x+1:]
 
@@ -128,7 +134,7 @@ def draw_points(surface):
 
 def display_notification(surface, text):
     font = pygame.font.Font(None, 36)
-    notification = font.render(text, True, WHITE)
+    notification = font.render(text, True, RED)
     surface.blit(notification, ((SCREEN_WIDTH - notification.get_width()) // 2, 50))
 
 def display_menu(surface):
@@ -140,7 +146,9 @@ def display_menu(surface):
 
 def main():
     global current_map
-    current_map = 0  # Start with the first map
+
+    # Start with the first map
+    current_map = 0
     menu_displayed = True
 
     # Initialize
@@ -164,12 +172,15 @@ def main():
                     if event.key == pygame.K_1:
                         current_map = 0
                         menu_displayed = False
+                        player.reset_position()  # Reset player position
                     elif event.key == pygame.K_2:
                         current_map = 1
                         menu_displayed = False
+                        player.reset_position()  # Reset player position
                     elif event.key == pygame.K_3:
                         current_map = 2
                         menu_displayed = False
+                        player.reset_position()  # Reset player position
                 else:
                     if event.key in keys_down:
                         keys_down[event.key] = True
@@ -221,12 +232,23 @@ def main():
             display_notification(screen, notification_text)
 
         pygame.display.update()
-        clock.tick(4)  # Adjust the argument to change the speed (10 frames per second in this case)
+        clock.tick(3)
 
         # Delay to slow down the movement
         elapsed_time = time.time() - start_time
         if elapsed_time < 0.1:
             time.sleep(0.1 - elapsed_time)
+
+        # Check if the player has reached the finish line
+        if maps[current_map][player.y][player.x] == "F":
+            # Congratulations message
+            congrats_text = f"Congratulations! You reached the finish line with {player.points} points!"
+            display_notification(screen, congrats_text)
+            pygame.display.update()
+            time.sleep(2)  # Adjust the duration the message is displayed
+            menu_displayed = True
+            screen.fill(BLACK)
+
 
 if __name__ == "__main__":
     main()
