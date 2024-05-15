@@ -1,108 +1,43 @@
-import cv2
-import mediapipe as mp
-import pyautogui
+from tensorflow.keras.models import load_model  # TensorFlow is required for Keras to work
+from PIL import Image, ImageOps  # Install pillow instead of PIL
 import numpy as np
-from math import hypot
 
-# Initialize MediaPipe hand tracking
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands()
-mp_drawing = mp.solutions.drawing_utils
+# Disable scientific notation for clarity
+np.set_printoptions(suppress=True)
 
-# Initialize the camera
-cap = cv2.VideoCapture(0)
+# Load the model
+model = load_model("Model/hand_gesture_model.keras", compile=False)
 
-# Initialize key states and gesture
-key_states = {'w': False, 'a': False, 's': False, 'd': False}
-gesture = None
+# Load the labels
+class_names = open("Model/labels.txt", "r").readlines()
 
-# Volume control variables
-volbar = 400
-volper = 0
+# Create the array of the right shape to feed into the keras model
+# The 'length' or number of images you can put into the array is
+# determined by the first position in the shape tuple, in this case 1
+data = np.ndarray(shape=(1, 300, 300, 3), dtype=np.uint8)
 
-while True:
-    success, img = cap.read()
-    img = cv2.flip(img, 1)  # Flip horizontally
-    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# Replace this with the path to your image
+image = Image.open("Data/Test/II/Image_1715723937.1327062.jpg").convert("RGB")
 
-    # Process hand landmarks
-    results = hands.process(imgRGB)
+# resizing the image to be at least 224x224 and then cropping from the center
+size = (300, 300)
+image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
 
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            mp_drawing.draw_landmarks(img, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+# turn the image into a numpy array
+image_array = np.asarray(image)
 
-            center_x = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x
-            center_y = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].y
-            index_finger_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
-            index_finger_base = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP]
+# Normalize the image
+normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
 
-            # Check hand position for controlling keys
-            if center_x > 0.7:
-                pyautogui.keyDown("d")
-                key_states['d'] = True
-                gesture = "d"
-            elif center_x < 0.3:
-                pyautogui.keyDown("a")
-                key_states['a'] = True
-                gesture = "a"
-            else:
-                if key_states['d']:
-                    pyautogui.keyUp("d")
-                    key_states['d'] = False
-                    gesture = None
-                if key_states['a']:
-                    pyautogui.keyUp("a")
-                    key_states['a'] = False
-                    gesture = None
+# Load the image into the array
+data[0] = normalized_image_array
 
-            if center_y > 0.7:
-                pyautogui.keyDown("s")
-                key_states['s'] = True
-                gesture = "s"
-            elif center_y < 0.3:
-                pyautogui.keyDown("w")
-                key_states['w'] = True
-                gesture = "w"
-            else:
-                if key_states['s']:
-                    pyautogui.keyUp("s")
-                    key_states['s'] = False
-                    gesture = None
-                if key_states['w']:
-                    pyautogui.keyUp("w")
-                    key_states['w'] = False
-                    gesture = None
+# Predicts the model
+prediction = model.predict(data)
+index = np.argmax(prediction)
+class_name = class_names[index]
+confidence_score = prediction[0][index]
 
-            # Volume control based on thumb and index finger distance
-            index_finger_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
-            thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
-
-            x1, y1 = int(index_finger_tip.x * img.shape[1]), int(index_finger_tip.y * img.shape[0])
-            x2, y2 = int(thumb_tip.x * img.shape[1]), int(thumb_tip.y * img.shape[0])
-            cv2.circle(img, (x1, y1), 13, (255, 0, 0), cv2.FILLED)
-            cv2.circle(img, (x2, y2), 13, (255, 0, 0), cv2.FILLED)
-            cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
-            length = hypot(x2 - x1, y2 - y1)
-            vol = np.interp(length, [30, 350], [0, 1])
-            volbar = np.interp(length, [30, 350], [400, 150])
-            volper = np.interp(length, [30, 350], [0, 100])
-
-            print(vol, int(length))
-
-
-            if int(length) < 90:
-                pyautogui.press("volumeup")
-
-            cv2.rectangle(img, (50, 150), (85, 400), (0, 0, 255), 4)
-            cv2.rectangle(img, (50, int(volbar)), (85, 400), (0, 0, 255), cv2.FILLED)
-            cv2.putText(img, f"{int(volper)}%", (10, 40), cv2.FONT_ITALIC, 1, (0, 255, 98), 3)
-
-    cv2.imshow('Handtracker', img)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release the camera and close OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
+# Print prediction and confidence score
+print("Class:", class_name[2:], end="")
+print("Confidence Score:", confidence_score)

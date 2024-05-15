@@ -3,12 +3,22 @@ import mediapipe as mp
 import pyautogui
 import math
 
+from tensorflow.keras.models import load_model  # TensorFlow is required for Keras to work
+from PIL import Image, ImageOps  # Install pillow instead of PIL
+import numpy as np
+
+
 # Drawing the lines on hand
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands()
 
 cap = cv2.VideoCapture(0)
+
+model = load_model("Model/hand_gesture_model.keras", compile=False)
+
+class_names = open("Model/labels.txt", "r").readlines()
+
 
 key_states = {'w': False, 'a': False, 's': False, 'd': False}
 gesture = None
