@@ -1,3 +1,4 @@
+# Import necessary libraries
 import pygame
 import random
 
@@ -29,13 +30,19 @@ def spawn_object(score):
 
 # Main game loop
 def main():
+    # Initialize clock and game state variables
     clock = pygame.time.Clock()
     running = True
+
+    # Initialize best score
+    best_score = 0
+
+    # Initial time and score
+    time_limit = 300
     score = 0
-    best_score = 0  # Initialize best score
-    time_limit = 300  # Initial time
     time_remaining = time_limit
     object_rect = None
+    # added time on hover
     time_added_on_hover = 100
 
     # Set up font
@@ -44,8 +51,10 @@ def main():
     # Game over font
     game_over_font = pygame.font.Font(None, 72)
 
+    # Main game loop
     while running:
         for event in pygame.event.get():
+            # Quit event handling
             if event.type == pygame.QUIT:
                 running = False
 
@@ -75,20 +84,26 @@ def main():
             # Check for hover
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if object_rect.collidepoint(mouse_x, mouse_y):
+                # add point to the score
                 score += 1
-                time_remaining += time_added_on_hover  # Increase time on hover
-                object_rect = None  # Reset object
+
+                # Increase time on hover
+                time_remaining += time_added_on_hover
+
+                # Reset object
+                object_rect = None
 
         # Update best score if the current score surpasses it
         if score > best_score:
             best_score = score
 
         # Decrease time remaining
-        time_remaining -= clock.get_rawtime()  # Use get_rawtime to ensure consistent timing
+        time_remaining -= clock.get_rawtime()
 
         # Increase difficulty over time
         if time_limit > 500:
-            time_limit -= 500  # Decrease time limit by 5 milliseconds per frame
+            # Decrease time limit by 5 milliseconds per frame
+            time_limit -= 500
 
         # Check if time runs out
         if time_remaining <= 0:
@@ -105,13 +120,15 @@ def main():
             # Check for retry input
             keys = pygame.key.get_pressed()
             if keys[pygame.K_r]:
+                # Reset score and time remaining to initial value
                 score = 0
-                time_remaining = 300  # Reset time remaining to initial value
+                time_remaining = 300
 
         # Update the display
         pygame.display.flip()
 
-        clock.tick(60)  # Keep a consistent frame rate
+        # Frame rate
+        clock.tick(60)
 
     pygame.quit()
 
