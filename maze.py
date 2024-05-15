@@ -245,7 +245,8 @@ def main():
             congrats_text = f"Congratulations! You reached the finish line with {player.points} points!"
             display_notification(screen, congrats_text)
             pygame.display.update()
-            time.sleep(2)  # Adjust the duration the message is displayed
+            # Adjust the duration the message is displayed
+            time.sleep(2)
             menu_displayed = True
             screen.fill(BLACK)
 
