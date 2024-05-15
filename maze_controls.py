@@ -20,7 +20,7 @@ model = load_model("Model/hand_gesture_model.keras", compile=False)
 class_names = open("Model/labels.txt", "r").readlines()
 
 
-key_states = {'w': False, 'a': False, 's': False, 'd': False}
+key_states = {'width': False, 'a': False, 's': False, 'd': False}
 gesture = None
 
 while True:
@@ -64,17 +64,17 @@ while True:
                 key_states['s'] = True
                 gesture = "s"
             elif center_y < 0.3:
-                pyautogui.keyDown("w")
-                key_states['w'] = True
-                gesture = "w"
+                pyautogui.keyDown("width")
+                key_states['width'] = True
+                gesture = "width"
             else:
                 if key_states['s']:
                     pyautogui.keyUp("s")
                     key_states['s'] = False
                     gesture = None
-                if key_states['w']:
-                    pyautogui.keyUp("w")
-                    key_states['w'] = False
+                if key_states['width']:
+                    pyautogui.keyUp("width")
+                    key_states['width'] = False
                     gesture = None
 
             cv2.putText(image, f'Gesture: {gesture}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2,
