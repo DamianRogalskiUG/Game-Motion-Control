@@ -68,6 +68,9 @@ def main():
                 correct_key_pressed = False
 
         # Display current number
+
+
+
         display_number(current_number)
         pygame.display.flip()
 
