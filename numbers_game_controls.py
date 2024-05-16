@@ -87,9 +87,7 @@ while True:
             width_gap = math.ceil((image_size-calculated_width) / 2)
             image_white[:, width_gap:calculated_width + width_gap] = image_resize
             image_white_predict = np.expand_dims(image_white, axis=0)
-            # prediction = model.predict(image_white_predict)
-            # print(prediction)
-            # control_game(prediction)
+            prediction = model.predict(im12221
 
         # if width is bigger
         else:
@@ -102,9 +100,9 @@ while True:
                 height_gap = math.ceil((image_size-calculated_height) / 2)
                 image_white[height_gap:calculated_height + height_gap, :] = image_resize
                 image_white_predict = np.expand_dims(image_white, axis=0)
-                # prediction = model.predict(image_white_predict)
-                # control_game(prediction)
-                # print(prediction)
+                prediction = model.predict(image_white_predict)
+                control_game(prediction)
+                print(prediction)
             except:
                 print("can't fit an image")
         # showing camera feeds for cropped image and a white image
