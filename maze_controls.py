@@ -11,7 +11,7 @@ hands = mp_hands.Hands()
 cap = cv2.VideoCapture(0)
 
 # setting key states (so the hand position will keep the key down till it changes position)
-key_states = {'width': False, 'a': False, 's': False, 'd': False}
+key_states = {'w': False, 'a': False, 's': False, 'd': False}
 
 # gesture variable is to present current gesture on screen
 gesture = None
@@ -68,17 +68,17 @@ while True:
                 key_states['s'] = True
                 gesture = "s"
             elif center_y < 0.3:
-                pyautogui.keyDown("width")
-                key_states['width'] = True
-                gesture = "width"
+                pyautogui.keyDown("w")
+                key_states['w'] = True
+                gesture = "w"
             else:
                 if key_states['s']:
                     pyautogui.keyUp("s")
                     key_states['s'] = False
                     gesture = None
-                if key_states['width']:
-                    pyautogui.keyUp("width")
-                    key_states['width'] = False
+                if key_states['w']:
+                    pyautogui.keyUp("w")
+                    key_states['w'] = False
                     gesture = None
 
             # Display the current gesture on the image

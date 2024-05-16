@@ -32,7 +32,7 @@ offset = 40
 image_size = 300
 
 # destination where images are saved
-image_destination_folder = "Data/IV"
+image_destination_folder = "Data/0"
 
 # counter to count captured images
 counter = 0
@@ -93,7 +93,7 @@ while True:
 
         # if width is bigger
         else:
-            # try except to prevent crashes with to big image size
+            # try except to prevent crashes with to big image sizesss
             try:
                 k = image_size / width
                 calculated_height = math.ceil(k * height)
@@ -107,11 +107,10 @@ while True:
                 print(prediction)
             except:
                 print("can't fit an image")
-
         # showing camera feeds for cropped image and a white image
         cv2.imshow("ImageCrop", image_crop)
         cv2.imshow("ImageWhite", image_white)
-
+312221241111433323123222313111
     # showing main camera feed
     cv2.imshow("Image", image)
     # cv2.waitKey(1)
