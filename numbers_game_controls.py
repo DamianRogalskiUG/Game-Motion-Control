@@ -32,7 +32,7 @@ offset = 40
 image_size = 300
 
 # destination where images are saved
-image_destination_folder = "Data/0"
+image_destination_folder = "Data/IV"
 
 # counter to count captured images
 counter = 0
@@ -87,9 +87,9 @@ while True:
             width_gap = math.ceil((image_size-calculated_width) / 2)
             image_white[:, width_gap:calculated_width + width_gap] = image_resize
             image_white_predict = np.expand_dims(image_white, axis=0)
-            prediction = model.predict(image_white_predict)
-            print(prediction)
-            control_game(prediction)
+            # prediction = model.predict(image_white_predict)
+            # print(prediction)
+            # control_game(prediction)
 
         # if width is bigger
         else:
@@ -102,9 +102,9 @@ while True:
                 height_gap = math.ceil((image_size-calculated_height) / 2)
                 image_white[height_gap:calculated_height + height_gap, :] = image_resize
                 image_white_predict = np.expand_dims(image_white, axis=0)
-                prediction = model.predict(image_white_predict)
-                control_game(prediction)
-                print(prediction)
+                # prediction = model.predict(image_white_predict)
+                # control_game(prediction)
+                # print(prediction)
             except:
                 print("can't fit an image")
         # showing camera feeds for cropped image and a white image
@@ -119,5 +119,5 @@ while True:
     key = cv2.waitKey(1)
     if key == ord("s"):
         counter += 1
-        cv2.imwrite(f"{image_destination_folder}/Image_{time.time()}.jpg", image_white)
+        cv2.imwrite(f"{image_destination_folder}/Image_{time.time()}_new.jpg", image_white)
         print(counter)
