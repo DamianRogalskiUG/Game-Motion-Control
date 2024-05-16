@@ -110,7 +110,7 @@ while True:
         # showing camera feeds for cropped image and a white image
         cv2.imshow("ImageCrop", image_crop)
         cv2.imshow("ImageWhite", image_white)
-312221241111433323123222313111
+
     # showing main camera feed
     cv2.imshow("Image", image)
     # cv2.waitKey(1)
