@@ -1,51 +1,45 @@
 \documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+\usepackage{graphicx} % Wymagane do wstawiania obrazów
 
-\title{Game Motion Control}
+\title{Sterowanie Ruchem w Grach}
 \author{Damian Rogalski}
-\date{May 2024}
+\date{Maj 2024}
 
 \begin{document}
 
 \maketitle
 
-\section{Wprowadzenie}
-Tematem mojego projektu jest sterowanie w grach za pomocą ruchu dłoni. Projekt podzielony jest na 3 częsci. Każda z nich posiada swoją odrębną grę demonstracyjną, żeby zwizualizować moje zaimplementowane rozwiązanie konkretnego problemu.
+\section{Wstęp}
+Celem mojego projektu jest sterowanie postacią w grach przy użyciu gestów dłoni. Projekt podzielony jest na trzy części, z których każda ma swoją własną demonstracyjną grę, aby zwizualizować zaimplementowane rozwiązanie dla konkretnego problemu.
 
 \section{Gry}
 \subsection{Maze}
-Gra Maze to prosta gra logiczna, gdzie gracz za pomocą ruchu dłoni (lewo, prawo, góra, dół) wskazuje kierunek, w którym ma się poruszyć zielony kwadrat. Celem gry jest dotarcie do czerwonego kwadratu, który jest metą. Gracz do dyspozycji ma trzy mapy. Podczas rozgrywki gracz może zbierać opcjonalne niebieskie punkty. Gra obrazuje działanie detekcji położenia dłoni w przestrzeni z wykorzystaniem biblioteki MediaPipe.
+Gra Labirynt to prosta gra logiczna, w której gracz za pomocą gestów dłoni (lewo, prawo, góra, dół) wskazuje kierunek, w którym ma poruszać się zielony kwadrat. Celem gry jest dotarcie do czerwonego kwadratu, który pełni rolę mety. Gracz ma do dyspozycji trzy mapy. Podczas rozgrywki gracz może zbierać opcjonalne niebieskie punkty. Gra ilustruje detekcję położenia dłoni w przestrzeni przy użyciu biblioteki MediaPipe.
 
 \subsection{Cursor Game}
-Gra Cursor Game to prosta gra, w której gracz może za pomocą palca wskazującego kontrolować kursor na ekranie i ma za zadanie najeżdżać nim na czerwone kwadraty losowo generowane na ekranie. Za każdy wskazany obiekt gracz otrzymuje punkt. Na wskazanie obiektu gracz ma ograniczony czas. Co dziesięć zebranych punktów kwadraty zmniejszają się, żeby utrudnić graczowi rozgrywkę. Gra ilustruje działanie detekcji palca wskazującego i obliczania jego pozycji w przestrzeni. Dodatkowo program oblicza odległość pomiędzy palcem wskazującym a kciukiem, gdyż gest ich złączenia ze sobą służy do zresetowania rozgrywki.
-
-\newpage
+Gra z Kursorem to prosta gra, w której gracz może kontrolować kursor na ekranie za pomocą wskazującego palca, zadaniem jest najechanie na losowo generowane czerwone kwadraty. Za każdy trafiony obiekt gracz zdobywa punkt. Gracz ma ograniczony czas na trafienie w każdy obiekt. Co dziesięć punktów, kwadraty zmniejszają swoją wielkość, aby zwiększyć trudność gry. Gra demonstruje detekcję palca wskazującego i obliczanie jego pozycji w przestrzeni. Dodatkowo program oblicza odległość pomiędzy palcem wskazującym a kciukiem, ponieważ złączenie tych palców resetuje grę.
 
 \subsection{Numbers Game}
-Gra Numbers Game wyświetla użytkownikowi na ekranie liczbę od 1 do 4, a gracz musi wskazać losowo wygenerowaną liczbę palcami. Przy poprawnym wskazaniu gracz otrzymuje informację "Correct!" a po dwóch sekundach generowana jest kolejna liczba. Rozgrywka ma za zadanie pokazanie działania predykcji mojego wytrenowanego modelu.
-
+Gra z Liczbami wyświetla na ekranie liczbę od 1 do 4, a zadaniem gracza jest wskazanie losowo wygenerowanej liczby palcami. Po poprawnym wskazaniu, gracz otrzymuje informację "Poprawnie!" i po dwóch sekundach generowana jest kolejna liczba. Gra ma na celu pokazanie działania predykcji mojego wytrenowanego modelu.
 
 \section{Model Klasyfikujący}
 \subsection{Dane}
-Projekt posiada własny model klasyfikujący. Jako dane treningowe i testowe wykonałem 400 zdjęć dłoni wskazującej liczbę od 1 do 4 (po 100 na klasę). Do przygotowania zdjęć stworzyłem program, który samemu wykrywa dłoń korzystając z biblioteki cvzone, następnie odpowiednio przycina zdjęcie do wskazanego wymiaru i je zapisuje.
+Projekt zawiera własny model klasyfikacyjny. Do treningu i testowania zebrano 400 obrazów przedstawiających wskazującą rękę z liczbami od 1 do 4 (po 100 na klasę). Do przygotowania obrazów stworzono program, który wykrywa rękę przy użyciu biblioteki cvzone, przycina obraz do określonych wymiarów i zapisuje go.
 
 \subsection{Trenowanie}
-Model wytrenowałem na danych w proporcjach 80\%/20\% (train/test). Dla 10 epok model trenuje się bardzo szybko, a jego dokładność wynosi około 95\%.
+Model trenowano na danych podzielonych na 80\% zbioru treningowego i 20\% zbioru testowego. Już po 10 epokach model uczy się bardzo szybko, osiągając dokładność na poziomie około 95\%.
 
 \section{Testowanie}
 \subsection{Maze}
-Przy testowaniu gry szybko wyszły ograniczenia związane z precyzją ruchu. Dla zmaksymalizowania komfortu rozgrywki należy zachować odpowiedni dystans (najlepiej około 1 metr) od kamery, żeby ułatwić detekcję pozycji dłoni. Przy zachowaniu odpowiednich warunków oświetleniowych gra nie generuje większych problemów.
+Podczas testowania gry Labirynt szybko pojawiły się ograniczenia związane z precyzją ruchu. Aby maksymalizować komfort gry, zaleca się zachowanie odpowiedniego odległości (najlepiej około 1 metra) od kamery, aby ułatwić detekcję położenia dłoni. Przy odpowiednich warunkach oświetleniowych gra działa bez większych problemów.
 
 \subsection{Cursor Game}
-W tej grze najmocniej wyłoniły się ograniczenia związane z biblioteką MediaPipe oraz sprzętem. Kursor na ekranie nie wykonuje płynych przejść a skokowe. Stanowi to pewien dyskomfort, jednakże rozgrywka nadal generuje sporo frajdy i generuje sporo frajdy przy zachowaniu dobrego oświetlenia.
-
-\newpage
+Ograniczenia biblioteki MediaPipe i sprzętu są najbardziej widoczne w tej grze. Ruch kursora na ekranie jest skokowy, co może być nieco niewygodne. Jednakże rozgrywka nadal dostarcza dużo frajdy i zabawy przy dobrym oświetleniu.
 
 \subsection{Numbers Game}
-Ta gra przyciągneła największą uwagę, gdyż korzysta ona z mojego własnego modelu klasyfikującego. Przy testach okazało się, że program bardzo często błędnie klasyfikuję jedynkę jako dwójkę. Ponadto z uwagi na zbyt niską liczbę danych program nie radzi sobie z detekcją gestów lewą ręką oraz ma mieszaną detekcję gestów u innych osób. Oświetlenie również odgrywa poważną rolę przy predykcji gestu. Jednakże, gdy ja testuję program to w wiekszości przypadków działa on poprawnie.
+Ta gra przyciągnęła największą uwagę, ponieważ wykorzystuje mój własny model klasyfikacyjny. Podczas testów okazało się, że program często błędnie klasyfikuje "1" jako "2". Dodatkowo, ze względu na ograniczoną liczbę danych, program ma trudności z detekcją gestów lewej ręki i wykazuje mieszane wyniki detekcji gestów u innych osób. Oświetlenie również odgrywa istotną rolę w predykcji gestów. Niemniej jednak, podczas moich własnych testów program działa poprawnie w większości przypadków.
 
 \section{Podsumowanie}
-Program w interesujący sposób demontruje działanie różnych narzedzi do detekcji dłoni. Efekty momentami są mizerne, żeby chwilę później stać się satysfakcjonującymi. Dużo problemów wynika z ograniczeń sprzętowych, czasowych czy samych narzedzi. Niemniej osoby testujące program były zadowolone i mile spędziły czas podczas rozwoju programu.
-
+Program ciekawie demonstruje działanie różnych narzędzi do detekcji dłoni. Wyniki czasami są początkowo skromne, ale szybko stają się satysfakcjonujące. Wiele problemów wynika z ograniczeń sprzętowych, czasowych lub samych narzędzi. Niemniej jednak, osoby testujące były zadowolone i dobrze się bawiły podczas rozwoju programu.
 
 \end{document}
